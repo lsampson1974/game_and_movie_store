@@ -7,6 +7,9 @@ class Item
       @type_of_item = type_of_item
       @price = price
       @amount_in_stock = amount_in_stock
+
+      @item_rating = []
+      @item_comment = []
   end
 
 
