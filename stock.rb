@@ -8,6 +8,7 @@ class Stockroom
 
         @items = []
         @total_sold_value = 0
+        @first_run = "yes"
 
     end
 
@@ -19,9 +20,13 @@ class Stockroom
 
         while picked_option != "e" do
 
-            puts "Welcome to the item tracking system !!"
-            puts " "
-            puts "Choose by typing the number and pressing <ENTER>"
+            if @first_run == "yes"
+                puts "Welcome to the item tracking system !!"
+                puts " "
+                puts "Choose by typing the number and pressing <ENTER>"
+                @first_run = "no"
+            end # Of first run check
+            
             puts " "
             puts "<1> Add a new item"
             puts "<2> Add a rating and comment to an item"
@@ -99,35 +104,52 @@ class Stockroom
        puts "Currently stored items :"
        puts "------------------------"
        puts " "
-       puts "Item              Quantity        Rating"
+       output_string = "Item".ljust(20)+"Quantity".ljust(20)+"Type".ljust(20)+"Rating"
+       puts output_string
+       puts " "
               
        if !self.is_stock_empty
 
           @items.each do |individual_item|
 
-              if indivdual_item.amount_in_stock > 0
+              stock_string = ""
+              avg_rating_string = ""
 
-                  avg = average_rating(individual_item.item_rating)
-                  puts "#{individual_item.name}              #{individual_item.amount_in_stock}        #{avg}" 
+              if individual_item.amount_in_stock > 0
+                  stock_string = individual_item.amount_in_stock.to_s
 
               else
-                  puts "#{individual_item.name}              Out Of Stock        #{avg}" 
+                  stock_string = "Out of stock."
+
+              end # Of in stock check...
+
+
+
+              avg = average_rating(individual_item.item_rating)
+
+              if avg > 0
+                  avg_rating_string = "* "*avg
+              
+              else
+                  avg_rating_string = "No rating"                
+              
+              end # Of average rating check
                                     
-
-              end # Of condition
-           
-
+              puts "#{individual_item.name}".ljust(20)+"#{stock_string}".ljust(20)+"#{individual_item.type_of_item}".ljust(20)+"#{avg_rating_string}"
+               
 
            end # Of loop.
 
         else
+           puts " "
            puts "No items found."   
+           puts " "
 
-    end # Of condition
+        end # Of condition
 
+        puts " "
 
-
-    end
+    end # Of method.
 
 
     #---------------------
@@ -143,13 +165,20 @@ class Stockroom
           print ">> "
           choice_num = gets.chomp
 
+          while choice_num < 0 || choice_num > @items.length
+              puts "Please choose again."
+              puts "The choices are (1- #{@items.length})"
+              choice_num = gets.chomp.to_i
+          end # Of input check
+
+
           puts "You are adding a rating to #{@items[choice_num.to_i-1].name}"
 
           puts "Add your personal rating (1-5)"
           print ">> "
           personal_rating = gets.chomp
 
-          while personal_rating.to_i > 5
+          while personal_rating.to_i > 5 || personal_rating.to_i < 0
 
               puts "Please choose 1-5 only"
               print ">> "
@@ -163,19 +192,94 @@ class Stockroom
           print ">> "
           personal_comment = gets.chomp
 
-          @items[choice_num.to_i-1].item_comment << personal_rating
+          @items[choice_num.to_i-1].item_comment << personal_comment
 
           puts " "
 
       else
+        puts "There's nothing to add a rating to"
+        puts " "
         puts "Press <ENTER> to continue..."
         gets.chomp
 
       end # Of condition 
 
-    end
+    end # Of method
 
     #---------------------
+
+    def get_rating_comment
+
+      list_items
+
+      if !is_stock_empty
+          puts "Which item would you like to view the ratings and comments ?"
+          puts "Choose (1 - #{@items.length})"
+          print ">> "
+          choice_num = gets.chomp.to_i
+          puts " "
+
+          while choice_num < 0 || choice_num > @items.length
+              puts "Please choose again."
+              puts "The choices are (1- #{@items.length})"
+              choice_num = gets.chomp.to_i
+          end # Of input check
+
+          output_name = @items[choice_num-1].name
+          output_type = @items[choice_num-1].type_of_item
+          item_rating_list = @items[choice_num-1].item_rating
+
+          avg = average_rating(item_rating_list)
+          avg_rating_string = ""
+
+          if avg > 0
+              avg_rating_string = "* "*avg          
+          else
+              avg_rating_string = "No rating"
+          end # Of average rating check
+
+
+          comment_list = @items[choice_num-1].item_comment
+
+          puts "Item name : #{output_name}"
+          puts "Type of item : #{output_type}"
+          puts "Rating : #{avg_rating_string}"
+
+          if comment_list.length == 0
+              puts " "
+              puts "There are no comments for this item."
+
+          else
+             comment_list.each do |comment|
+
+                 puts " "
+                 puts "------------------------------"
+                 puts "#{comment}"
+                 puts "------------------------------" 
+                 puts " "
+
+             end # Of comment print loop.
+
+          end # Of comment list check
+
+
+      else
+          puts "There's no items with ratings to view"
+          puts " "
+          puts "Press <ENTER> to continue..."
+          gets.chomp
+
+      end # Of condition 
+
+    end # Of method
+    
+    #---------------------
+
+
+
+    #-------------------------------------------------
+    #-------------------------------------------------
+    # Helper methods :
 
     def list_items
 
@@ -187,7 +291,7 @@ class Stockroom
           item_counter = 0
           @items.each do |individual_item|
 
-              puts "<#{item_counter+1}> #{individual_item.name}" 
+              puts "<#{item_counter+1}> #{individual_item.name} (#{individual_item.amount_in_stock})" 
               item_counter += 1
 
           end # Of loop.
@@ -215,14 +319,22 @@ class Stockroom
 
        item_rating_list.each do |rating|
 
-          running_total += rating
+          running_total += rating.to_i
 
-       end
+       end # Of loop
 
-       average = running_total/item_rating_list.length
+       if running_total == 0
+          average = 0
 
-       average.round()
+       else   
+          average = running_total/item_rating_list.length
+          average = average.round()
 
-    end
+       end # Of condition block.
+
+       average
+       
+
+    end # Of method
 
 end # Of class
