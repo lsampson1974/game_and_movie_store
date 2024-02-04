@@ -283,14 +283,29 @@ class Stockroom
         else
             list_items
 
-            puts "Which item would you like to sell? (1- #{@items.length})"
+            puts "Which item would you like to sell? (1- #{@items.length}) or <e> to exit"
             print ">> "
-            choice_num = gets.chomp.to_i
+            
+            choice_made = gets.chomp
+
+            if choice_made != "e"
+                choice_num = choice_made.to_i
+            else 
+                return
+            end
 
             while choice_num < 0 || choice_num > @items.length
                 puts "Please choose again."
-                puts "The choices are (1- #{@items.length})"
-                choice_num = gets.chomp.to_i
+                puts "The choices are (1- #{@items.length}) or <e> to exit"
+
+                choice_made = gets.chomp
+
+                if choice_made != "e"
+                    choice_num = choice_made.to_i
+                else 
+                    return
+                end
+    
             end # Of input check
 
             amount_of_item = @items[choice_num-1].amount_in_stock
