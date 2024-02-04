@@ -91,11 +91,7 @@ class Stockroom
        puts "Enter the amount (in stock) of the item : "
        amount_in_stock = gets.chomp
 
-       item_to_be_added = Item.new(item_name, item_type, item_price, amount_in_stock)
-
-       @items << item_to_be_added
-
-       puts "Item added..."
+       add_item(item_name, item_type, item_price, amount_in_stock)
 
        puts " "
 
@@ -169,12 +165,11 @@ class Stockroom
           print ">> "
           choice_num = gets.chomp
 
-          while choice_num < 0 || choice_num > @items.length
+          while !input_ok(1, @items.length, choice_num)
               puts "Please choose again."
               puts "The choices are (1- #{@items.length})"
               choice_num = gets.chomp.to_i
           end # Of input check
-
 
           puts "You are adding a rating to #{@items[choice_num.to_i-1].name}"
 
@@ -182,7 +177,7 @@ class Stockroom
           print ">> "
           personal_rating = gets.chomp
 
-          while personal_rating.to_i > 5 || personal_rating.to_i < 0
+          while !input_ok(1, 5, personal_rating)
 
               puts "Please choose 1-5 only"
               print ">> "
@@ -210,6 +205,7 @@ class Stockroom
 
     end # Of method
 
+
     #---------------------
 
     def get_rating_comment
@@ -223,7 +219,7 @@ class Stockroom
           choice_num = gets.chomp.to_i
           puts " "
 
-          while choice_num < 0 || choice_num > @items.length
+          while !input_ok(1, @items.length, choice_num)
               puts "Please choose again."
               puts "The choices are (1- #{@items.length})"
               choice_num = gets.chomp.to_i
@@ -279,6 +275,18 @@ class Stockroom
     
     #---------------------
 
+    def add_item(name, type, price, stock_amount)
+
+        item_to_be_added = Item.new(name, type, price, stock_amount)
+
+        @items << item_to_be_added
+ 
+        puts "Item added..."
+
+    end
+
+    #---------------------
+
     def sell_items
 
         if is_stock_empty
@@ -298,7 +306,7 @@ class Stockroom
                 return
             end
 
-            while choice_num < 0 || choice_num > @items.length
+            while !input_ok(1, @items.length, choice_num)
                 puts "Please choose again."
                 puts "The choices are (1- #{@items.length}) or <e> to exit"
 
@@ -319,7 +327,8 @@ class Stockroom
             print ">> "
             quantity = gets.chomp.to_i
 
-            while quantity < 1 || quantity > amount_of_item
+
+            while !input_ok(1, amount_of_item, quantity)
                 puts " "
                 puts "Please choose again."
                 puts "Choose a number between 1 and #{amount_of_item}"
@@ -370,7 +379,9 @@ class Stockroom
                 return
             end
 
-            while choice_num < 0 || choice_num > @items.length
+
+            while !input_ok(1, @items.length, choice_num) && choice_num != "e"
+
                 puts "Please choose again."
                 puts "The choices are (1- #{@items.length}) or <e> to exit"
 
@@ -381,8 +392,10 @@ class Stockroom
                 else 
                     return
                 end
-    
-            end # Of input check
+            
+
+            end # Of while input check loop.
+
 
             amount_of_item = @items[choice_num-1].amount_in_stock
 
@@ -473,5 +486,18 @@ class Stockroom
        
 
     end # Of method
+
+
+    #---------------------
+
+    def input_ok(lower_range, upper_range, user_input)
+
+        input_range = lower_range.to_i..upper_range.to_i
+
+        input_range.include?(user_input.to_i)
+
+    end
+
+
 
 end # Of class
