@@ -33,6 +33,7 @@ class Stockroom
             puts "<3> List all items"
             puts "<4> Show ratings and comments for a specific item"
             puts "<5> Sell items"
+            puts "<6> Replenish items"
             puts "<e> Exit"
             puts " "
             print ">> "
@@ -55,11 +56,14 @@ class Stockroom
                 when "5"
                   sell_items
 
+                when "6"
+                  replenish_items
+
                 when "e"
                   puts "Bye for now !!"
                   break
                 else
-                  puts "Invalid choice. Please choose one of (1-5) or e"
+                  puts "Invalid choice. Please choose one of (1-6) or e"
                   
             end # Of case block
 
@@ -319,6 +323,7 @@ class Stockroom
                 puts " "
                 puts "Please choose again."
                 puts "Choose a number between 1 and #{amount_of_item}"
+                print ">> "
                 quantity = gets.chomp.to_i
             end
 
@@ -343,6 +348,60 @@ class Stockroom
 
 
     end # of method
+
+    #---------------------
+  
+    def replenish_items
+
+        if is_stock_empty
+            puts "There are no items to replenish"
+            
+        else
+            list_items
+
+            puts "Which item would you like to replenish? (1- #{@items.length}) or <e> to exit"
+            print ">> "
+            
+            choice_made = gets.chomp
+
+            if choice_made != "e"
+                choice_num = choice_made.to_i
+            else 
+                return
+            end
+
+            while choice_num < 0 || choice_num > @items.length
+                puts "Please choose again."
+                puts "The choices are (1- #{@items.length}) or <e> to exit"
+
+                choice_made = gets.chomp
+
+                if choice_made != "e"
+                    choice_num = choice_made.to_i
+                else 
+                    return
+                end
+    
+            end # Of input check
+
+            amount_of_item = @items[choice_num-1].amount_in_stock
+
+            puts " "
+            puts "How much to add ?"
+            print ">> "
+            additional_stock = gets.chomp.to_i
+
+            @items[choice_num-1].amount_in_stock = amount_of_item+additional_stock
+
+            puts " "
+            puts "Item amount updated..."
+            puts " "
+
+        end # Of stock check.
+
+
+    end # Of method
+
 
 
     #-------------------------------------------------
