@@ -1,5 +1,15 @@
-# ruby-cli-template
+# General inventory program
 
-Use this repository as a template for your Ruby CLI (command line interface) project.
+# This is a simple inventory program that is a demonstration of OOP using
+# Ruby.
 
-- Ruby version: `3.2.1`
+Program features
+----------------
+
+* Add items to inventory
+
+* Tracks the amount of item in inventory
+
+* Ratings and comments about an item can be added.
+
+* Items can be sold and replenished.
