@@ -12,4 +12,4 @@ Program features
 
 * Ratings and comments about an item can be added.
 
-* Items can be sold and replenished.
+* Items can be sold and/or replenished.
