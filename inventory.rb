@@ -1,6 +1,4 @@
-
 require_relative "items"
-
 
 class Stockroom
 
@@ -104,7 +102,7 @@ class Stockroom
        puts "Currently stored items :"
        puts "------------------------"
        puts " "
-       output_string = "Item".ljust(20)+"Quantity".ljust(20)+"Type".ljust(20)+"Rating"
+       output_string = "Item".ljust(40)+"Quantity".ljust(15)+"Type".ljust(15)+"Rating"
        puts output_string
        puts " "
               
@@ -123,19 +121,10 @@ class Stockroom
 
               end # Of in stock check...
 
-
-
-              avg = average_rating(individual_item.item_rating)
-
-              if avg > 0
-                  avg_rating_string = "* "*avg
-              
-              else
-                  avg_rating_string = "No rating"                
-              
-              end # Of average rating check
+#             avg = average_rating(individual_item.item_rating)
+              rating_string = get_average_rating_string(individual_item.item_rating)
                                     
-              puts "#{individual_item.name}".ljust(20)+"#{stock_string}".ljust(20)+"#{individual_item.type_of_item}".ljust(20)+"#{avg_rating_string}"
+              puts "#{individual_item.name}".ljust(40)+"#{stock_string}".ljust(15)+"#{individual_item.type_of_item}".ljust(15)+"#{rating_string}"
                
 
            end # Of loop.
@@ -229,21 +218,13 @@ class Stockroom
           output_type = @items[choice_num-1].type_of_item
           item_rating_list = @items[choice_num-1].item_rating
 
-          avg = average_rating(item_rating_list)
-          avg_rating_string = ""
-
-          if avg > 0
-              avg_rating_string = "* "*avg          
-          else
-              avg_rating_string = "No rating"
-          end # Of average rating check
-
+          rating_string = get_average_rating_string(item_rating_list)
 
           comment_list = @items[choice_num-1].item_comment
 
           puts "Item name : #{output_name}"
           puts "Type of item : #{output_type}"
-          puts "Rating : #{avg_rating_string}"
+          puts "Rating : #{rating_string}"
 
           if comment_list.length == 0
               puts " "
@@ -380,7 +361,7 @@ class Stockroom
             end
 
 
-            while !input_ok(1, @items.length, choice_num) && choice_num != "e"
+            while !input_ok(1, @items.length, choice_num)
 
                 puts "Please choose again."
                 puts "The choices are (1- #{@items.length}) or <e> to exit"
@@ -463,32 +444,37 @@ class Stockroom
 
     #---------------------
 
-    def average_rating(item_rating_list)
+    def get_average_rating_string(item_rating_list)
+        
+        running_total = 0
 
-       running_total = 0
+        item_rating_list.each do |rating|
+ 
+           running_total += rating.to_i
+ 
+        end # Of loop
+ 
+        if running_total == 0
+           average = 0
+ 
+        else   
+           average = running_total/item_rating_list.length
+           average = average.round()
+ 
+        end # Of condition block.
 
-       item_rating_list.each do |rating|
+        if average > 0
+            avg_rating_string = "* "*average          
+        else
+            avg_rating_string = "No rating"
+        end # Of average rating check
 
-          running_total += rating.to_i
+        avg_rating_string
 
-       end # Of loop
-
-       if running_total == 0
-          average = 0
-
-       else   
-          average = running_total/item_rating_list.length
-          average = average.round()
-
-       end # Of condition block.
-
-       average
-       
-
-    end # Of method
-
+    end
 
     #---------------------
+
 
     def input_ok(lower_range, upper_range, user_input)
 
