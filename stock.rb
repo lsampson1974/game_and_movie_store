@@ -275,6 +275,59 @@ class Stockroom
     
     #---------------------
 
+    def sell_items
+
+        if is_stock_empty
+            puts "There are no items to sell"
+            
+        else
+            list_items
+
+            puts "Which item would you like to sell? (1- #{@items.length})"
+            print ">> "
+            choice_num = gets.chomp.to_i
+
+            while choice_num < 0 || choice_num > @items.length
+                puts "Please choose again."
+                puts "The choices are (1- #{@items.length})"
+                choice_num = gets.chomp.to_i
+            end # Of input check
+
+            amount_of_item = @items[choice_num-1].amount_in_stock
+            price_per_item = @items[choice_num-1].price
+
+            puts "How much ?"
+            print ">> "
+            quantity = gets.chomp.to_i
+
+            while quantity < 1 || quantity > amount_of_item
+                puts " "
+                puts "Please choose again."
+                puts "Choose a number between 1 and #{amount_of_item}"
+                quantity = gets.chomp.to_i
+            end
+
+            # Calculate price and adjust quantity for amount sold.
+
+            puts " "
+            puts "Total sold : #{quantity} @ #{price_per_item}"
+
+            @items[choice_num-1].amount_in_stock -= quantity
+
+            amount_made = quantity*price_per_item
+
+            puts " "
+            puts "Amount made : #{amount_made}"
+
+            @total_sold_value += amount_made
+
+            puts "Grand total (from all sold items) : #{@total_sold_value}"
+          
+
+        end # Of stock check condition.
+
+
+    end # of method
 
 
     #-------------------------------------------------
@@ -288,10 +341,20 @@ class Stockroom
           puts "----------------"
           puts " "  
 
+          output_string = ""
+
           item_counter = 0
           @items.each do |individual_item|
 
-              puts "<#{item_counter+1}> #{individual_item.name} (#{individual_item.amount_in_stock})" 
+              if individual_item.amount_in_stock > 0
+                  output_string = "<#{item_counter+1}> #{individual_item.name} (#{individual_item.amount_in_stock})"
+
+              else
+                  output_string = "<#{item_counter+1}> #{individual_item.name} (Not in stock)"
+
+              end # Of stock check.
+
+              puts output_string 
               item_counter += 1
 
           end # Of loop.
