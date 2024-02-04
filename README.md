@@ -1,7 +1,7 @@
 # General inventory program
 
-# This is a simple inventory program that is a demonstration of OOP using
-# Ruby.
+This is a simple inventory program that is a demonstration of OOP using Ruby
+-----------------------------------------------------------------------
 
 Program features
 ----------------
