@@ -32,5 +32,22 @@ class TestInventoryTracker < Minitest::Test
     
 #-----------------------------
 
-    
-end
+  def test_insert_new_item
+
+      assert_output(/Item added.../) { @stockroom_test.add_item("R-Type", "game", "40", "10") }
+
+  end
+
+  
+#-----------------------------
+
+  def test_rating_string
+
+    test_rating_array = [4, 4, 1, 3]
+
+    assert_equal "* * * ", @stockroom_test.get_average_rating_string(test_rating_array), "Method failed to create rating string."
+
+  end
+
+
+end # End of class.
